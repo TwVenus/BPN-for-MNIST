@@ -143,47 +143,4 @@ if __name__ == "__main__":
     # learning_rate = 學習速率, bias = 偏差值, hidden_node = 隱藏層node個數, output_node = 輸出層個數, correct_rate = 終止條件, error_value = 誤差數
     bpnn = Bpnn(dataset, learning_rate=0.05, bias=-1, hidden_node=88, output_node=10, correct_rate=0.9, error_value=0.001, momentum=0.9)
     bpnn.train()
-
-    mse = 0
-    pass_count = 0
-    for dataset_num in range(0, dataset.feature_list_test.shape[0]):
-        ### 前饋階段
-        hidden_after_formula1 = []
-        # 計算input到hidden的結果
-        for i in range(0, 88):
-            hiddens_num = 0
-            for j in range(0, len(dataset.feature_list_test[1])):
-                # i * 5(self.feature_list.shape[1] + 1) + j
-                hiddens_num += dataset.feature_list_test[dataset_num][j] * bpnn.weight_list_h[
-                    i * (len(dataset.feature_list_test[1]) + 1) + j + 1]
-            hiddens_num += -1 * bpnn.weight_list_h[i * (len(dataset.feature_list_test[1]) + 1)]
-            hidden_after_formula1.append(1 / (1 + np.math.exp(hiddens_num * -1)))
-
-        output_after_formula1 = []
-        output_after_formula1_t = []
-        for i in range(0, 10):
-            output_num = 0
-            for j in range(0, 88):
-                # i * 4(self.hidden_node + 1) + j
-                output_num += hidden_after_formula1[j] * bpnn.weight_list_o[
-                    i * (len(hidden_after_formula1) + 1) + j + 1]
-            output_num += -1 * bpnn.weight_list_o[i * (len(hidden_after_formula1) + 1)]
-            output_after_formula1.append(1 / (1 + np.math.exp(output_num * -1)))
-        output_after_formula1_t = np.where(np.array(output_after_formula1) > 0.5, 1, 0)
-
-        error = 0
-        error_one = 0
-        for i in range(0, 10):
-            if dataset.output_list_test[dataset_num] == i:
-                error += pow(output_after_formula1[i] - 1, 2)
-                error_one += pow(1 - output_after_formula1_t[i], 2)
-            else:
-                error += pow(output_after_formula1[i], 2)
-                error_one += pow(0 - output_after_formula1_t[i], 2)
-        mse += error / 10
-
-        ### 倒傳遞階段
-        if error_one == 0:
-            pass_count += 1
-
-    print("TEST :  " , " correct_rate : ", pass_count/dataset.feature_list_test.shape[0], " mse : ", mse)
+    
